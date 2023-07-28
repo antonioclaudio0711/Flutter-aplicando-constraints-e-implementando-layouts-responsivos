@@ -1,10 +1,34 @@
 import 'package:flutter/material.dart';
-
-import '../../../../../../utils/asset_paths.dart';
+import 'package:flutter_responsivity_constraints/app/modules/home/presenter/store/home_store.dart';
+import 'package:flutter_responsivity_constraints/utils/models/food_model.dart';
 import '../../../../../../utils/colors.dart';
 
-class HighlightCard extends StatelessWidget {
-  const HighlightCard({super.key});
+class HighlightCard extends StatefulWidget {
+  const HighlightCard({
+    super.key,
+    required this.name,
+    required this.price,
+    required this.description,
+    required this.image,
+    required this.store,
+  });
+
+  final String name;
+  final String price;
+  final String description;
+  final String image;
+  final HomeStore store;
+
+  @override
+  State<HighlightCard> createState() => _HighlightCardState();
+}
+
+class _HighlightCardState extends State<HighlightCard> {
+  String get name => widget.name;
+  String get price => widget.price;
+  String get description => widget.description;
+  String get image => widget.image;
+  HomeStore get store => widget.store;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +50,7 @@ class HighlightCard extends StatelessWidget {
                 topRight: Radius.circular(15),
               ),
               child: Image.asset(
-                AssetPaths.lasagnaBologneseImage,
+                image,
                 fit: BoxFit.cover,
               ),
             ),
@@ -39,27 +63,27 @@ class HighlightCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Lasagna bolognese',
+                Text(
+                  name,
                   textAlign: TextAlign.start,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                const Text(
-                  'R\$ 58,90',
+                Text(
+                  'R\$ $price',
                   textAlign: TextAlign.start,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                  'Experimente a deliciosa lasanha com massa fresca feita na casa com um delicioso recheio bolonhesa com tomates produzidos localmente.',
+                Text(
+                  description,
                   textAlign: TextAlign.start,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16.5,
                     fontWeight: FontWeight.w400,
                   ),
@@ -68,7 +92,23 @@ class HighlightCard extends StatelessWidget {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      store.insertFood(
+                        food: Food(
+                          name: name,
+                          price: price,
+                          image: image,
+                        ),
+                      );
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Produto selecionado com sucesso!'),
+                          duration: Duration(seconds: 3),
+                          backgroundColor: Color.fromARGB(255, 46, 19, 51),
+                        ),
+                      );
+                    },
                     child: Container(
                       height: 45,
                       width: 90,
